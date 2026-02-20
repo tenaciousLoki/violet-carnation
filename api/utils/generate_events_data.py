@@ -1,7 +1,7 @@
 from faker import Faker
 import sqlite3
 import random
-
+from datetime import datetime
 # Faker init
 fake = Faker()
 
@@ -20,7 +20,7 @@ def get_org_ids(conn: sqlite3.Connection):
     return rows
 
 
-# TODO: Map each event name to its correct organization based on its category
+# Potential TODO: Map each event name to its correct organization based on its category
 def generate_event_name():
     event_names = [
         # Animal Welfare (1–5)
@@ -147,47 +147,41 @@ def generate_event_name():
 
     return random.choice(event_names)
 
+# Make catch phrase faker module shorter 
+def short_event_name(max_words=2):
+    name = (fake.catch_phrase().title()).split()
+    return " ".join(name[:max_words])
 
-def generate_events_data(conn: sqlite3.Connection):
+def generate_events_data(conn: sqlite3.Connection, num_records):
     # get list of organization id's
-    org_ids = get_org_ids(conn)
+    org_ids = list(get_org_ids(conn))
+
+    num_records_count = 0
 
     events_data = []
 
-    # count variables
-    orgID_count = 0
-    numRecords_count = 0
-
-    numRecords_max = len(org_ids) * 10  # give each organization at least 10 events
-
-    # add fake events to events_data
+    # add fake events data to events_data
     print(f"Generating data for {len(org_ids)} organization ID's ...")
-    while numRecords_count != numRecords_max:
-        event_name = (fake.catch_phrase()).title()
-        event_description = fake.paragraph(10)
-        location = fake.address()
-        time = fake.time(pattern="%H:%M")
+    while num_records_count != num_records:
+        # create fake data
+        event_name = short_event_name()
+        event_description = fake.paragraph(3)
+        location = fake.street_name() 
+        date_time = fake.date_time_between(start_date=datetime(2026, 1, 1), end_date='+1y')
 
         # convert tuple into an integer
-        org_id = int(''.join(map(str, org_ids[orgID_count]))) 
+        org_id = int(''.join(map(str, random.choice(org_ids)))) 
         
-        
+
         # add events data to events_data list
         events_data.append(
             (event_name, 
             event_description, 
             location, 
-            time, 
+            date_time, 
             org_id)
         )
-        # increment variables
-        numRecords_count += 1
 
-        if (
-            orgID_count == (len(org_ids) - 1)
-        ):  # add the next set of events to the same org id's again by restarting orgID_count
-            orgID_count = 0
-        else:
-            orgID_count += 1
+        num_records_count += 1
 
     return events_data

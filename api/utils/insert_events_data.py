@@ -5,7 +5,7 @@ def insert_events_data(conn, cursor, events_data):
     # insert data into events table 
     insert_query = """
     INSERT INTO events (
-        name, description, location, time, organization_id
+        name, description, location, date_time, organization_id
     ) VALUES (?, ?, ?, ?, ?)
     """
     # insert data in parameters into database
@@ -37,10 +37,10 @@ def verify_data(cursor):
 
 
 # main configuration
-def execute_insert_events_data(conn: sqlite3.Connection, cursor):
+def execute_insert_events_data(conn: sqlite3.Connection, cursor, num_records):
     print("Generating synthetic data...")
 
-    events_data = generate_events_data(conn)
+    events_data = generate_events_data(conn, num_records=200)
 
     print(f"Inserting {len(events_data)} records in DB...")
     insert_events_data(conn, cursor, events_data)
