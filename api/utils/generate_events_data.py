@@ -1,7 +1,6 @@
 from faker import Faker
 import sqlite3
 import random
-from datetime import datetime
 # Faker init
 fake = Faker()
 
