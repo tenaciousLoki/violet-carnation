@@ -37,10 +37,10 @@ def verify_data(cursor):
 
 
 # main configuration
-def execute_insert_events_data(conn: sqlite3.Connection, cursor, num_records):
+def execute_insert_events_data(conn: sqlite3.Connection, cursor):
     print("Generating synthetic data...")
 
-    events_data = generate_events_data(conn, num_records=200)
+    events_data = generate_events_data(conn, 200)
 
     print(f"Inserting {len(events_data)} records in DB...")
     insert_events_data(conn, cursor, events_data)

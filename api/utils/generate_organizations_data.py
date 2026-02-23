@@ -1,7 +1,6 @@
 import json
 import sqlite3
-import random
-
+from categories import generate_category
 from faker import Faker
 
 # Faker init
@@ -22,35 +21,6 @@ def get_admin_users(conn: sqlite3.Connection):
     rows = cursor.fetchall()
 
     return rows
-
-
-
-def generate_category():
-    # Return a random category
-    event_categories = [
-        "Animal Welfare",
-        "Hunger and Food Security",
-        "Homelessness and Housing",
-        "Education & Tutoring",
-        "Youth and Children",
-        "Senior Care and Support",
-        "Health & Medical",
-        "Environmental Conservation",
-        "Community Development",
-        "Arts & Culture",
-        "Disaster Relief",
-        "Veterans & Military Families",
-        "Immigrants & Refugees",
-        "Disability Services",
-        "Mental Health & Crisis Support",
-        "Advocacy & Human Rights",
-        "Faith-Based Services",
-        "Sports & Recreation",
-        "Job Training & Employment",
-        "Technology & Digital Literacy",
-    ]
-    
-    return random.choice(event_categories)
 
 
 

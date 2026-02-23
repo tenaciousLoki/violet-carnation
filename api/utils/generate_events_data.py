@@ -156,18 +156,16 @@ def generate_events_data(conn: sqlite3.Connection, num_records):
     # get list of organization id's
     org_ids = list(get_org_ids(conn))
 
-    num_records_count = 0
-
     events_data = []
 
     # add fake events data to events_data
     print(f"Generating data for {len(org_ids)} organization ID's ...")
-    while num_records_count != num_records:
+    for _ in range(num_records):
         # create fake data
         event_name = short_event_name()
         event_description = fake.paragraph(3)
         location = fake.street_name() 
-        date_time = fake.date_time_between(start_date=datetime(2026, 1, 1), end_date='+1y')
+        date_time = fake.date_time_between(start_date="now", end_date='+1y')
 
         # convert tuple into an integer
         org_id = int(''.join(map(str, random.choice(org_ids)))) 
@@ -181,7 +179,5 @@ def generate_events_data(conn: sqlite3.Connection, num_records):
             date_time, 
             org_id)
         )
-
-        num_records_count += 1
 
     return events_data

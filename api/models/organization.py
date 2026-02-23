@@ -1,5 +1,5 @@
 from typing import Optional
-
+from utils.categories import categoriesEnum
 from pydantic import BaseModel, PositiveInt
 
 
@@ -7,19 +7,19 @@ class Organization(BaseModel):
     organization_id: PositiveInt
     name: str
     description: Optional[str] = None
-    category: str
+    category: categoriesEnum
     created_by_user_id: PositiveInt
 
 
 class OrganizationCreate(BaseModel):
     name: str
     description: Optional[str] = None
-    category: str
+    category: categoriesEnum
     user_id: PositiveInt
 
 
 class OrganizationUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    category: str
+    category: categoriesEnum
     user_id: PositiveInt
