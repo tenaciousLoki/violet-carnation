@@ -1,39 +1,10 @@
-"use client";
-
-import { AuthCard } from "@/components/AuthCard";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
+import SignInForm from "@/components/SignInForm";
 
 export default function SignInPage() {
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response.ok) {
-      router.push("/");
-    }
-  };
-
   return (
-    <AuthCard
-      title="Sign In"
-      buttonText="Login"
-      footerText="Don't have an account?"
-      footerLinkText="Sign up now"
-      footerLinkHref="/signup"
-      onSubmit={handleSubmit}
-    >
-      <Label htmlFor="email">Email</Label>
-      <Input id="email" name="username" type="email" />
-      <Label htmlFor="password">Password</Label>
-      <Input id="password" name="password" type="password" />
-    </AuthCard>
+    <div className="min-h-screen items-center ">
+      <h1 className="text-2xl font-bold text-center m-6">Welcome Back</h1>
+      <SignInForm />
+    </div>
   );
 }
