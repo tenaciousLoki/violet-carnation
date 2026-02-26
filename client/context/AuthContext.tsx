@@ -8,6 +8,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export interface AuthUser {
   user_id: number;
@@ -42,6 +44,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   const fetchCurrentUser = useCallback(async () => {
     try {
@@ -53,14 +56,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const data = (await res.json()) as AuthUser;
         setUser(data);
       } else {
+        const data = await res.json().catch(() => null);
         setUser(null);
+        if (data?.detail === "Invalid or expired token") {
+          try {
+            await fetch("/api/auth/logout", {
+              method: "POST",
+              credentials: "include",
+            });
+          } catch {
+            // Ignore logout errors; proceed with redirect.
+          }
+          toast.error("Your session has expired. Please sign in again.");
+          router.push("/");
+        }
       }
     } catch {
       setUser(null);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     fetchCurrentUser();
