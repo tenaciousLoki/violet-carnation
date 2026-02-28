@@ -3,11 +3,12 @@ import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { cookies } from "next/headers";
+
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import { RolesProvider } from "@/context/RolesContext";
 import { fetchRoles } from "@/lib/roles";
-import { getServerSession } from "@/lib/session";
 import type { Role } from "@/models/roles";
 
 const geistSans = Geist({
@@ -31,11 +32,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
-  const userId = session?.userId ?? null;
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get("session");
+  const cookieHeader = sessionCookie ? `session=${sessionCookie.value}` : undefined;
 
-  const initialRoles: Role[] = userId !== null ? await fetchRoles(userId) : [];
+  let initialRoles: Role[] = [];
 
+  if (cookieHeader) {
+    initialRoles = await fetchRoles(cookieHeader);
+  }
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
